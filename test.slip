@@ -1,0 +1,20 @@
+;;; Tests                               -*- mode: lisp-data; coding: utf-8 -*-
+
+-5                                      ; ↝ -5
+(+ -3 7)                                ; ↝ 4
+
+((fob (x) 42) 100)                      ; ↝ 42
+
+;;; Test: deux arguments et une soustraction
+((fob (x y) (- x y)) 10 3)              ; ↝ 7
+
+;;; Test d'une fonction imbriquée
+(((fob (x) (fob (y) (+ x y))) 10) 5)    ; ↝ 15
+
+;;; Test 'let'
+(let x 3 (let y 4 (+ (* x y) (- y x)))) ; ↝ 13
+
+;;; Test d'une récursion avec 'fix' pour les puissances de 2
+(fix (((power2 x) (if (= x 0) 1 (* 2 (power2 (- x 1))))))
+  (power2 4))                           ; ↝ 16
+
