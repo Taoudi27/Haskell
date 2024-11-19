@@ -1,0 +1,51 @@
+1.
+resultat:
+
+(let ((f (car val))
+      (xs (cdr val)))
+  fx
+  (map f xs))
+
+2.
+
+resultat:
+
+(let ((f (car (demander-a-l-utilisateur)))
+      (xs (cdr (demander-a-l-utilisateur))))
+  (map f (cons x xs)))
+
+
+3. resultat:
+
+(let ((f (car (lookup val y)))
+      (xs (cdr (lookup val y))))
+  (map f (cons pat xs)))
+
+
+4.
+Les problemes que je vois dans ces expensions:
+
+probleme de verification de structure: pat n'est pas toujours une "cons" cell, donc c'est un probleme si val ne l'est pas; il peux y avoir une erreur.
+
+probleme de repetition d'evaluation: si val est complexe, elle va etre evaluée 2 fois, ce qui peux mener a des erreurs
+
+general: enfaite, pour des cas complexe de correspondence de motifs, la structure du programme ne pourra pas gerer et ca va mener a des problemes
+
+
+5.
+
+correction:
+
+
+(defmacro plet (pat val body)
+  `(let ((temp-val ,val))  ; évaluation unique
+     (if (not (consp temp-val))
+         (error "val doit être une cons-cell")
+       (let ((,(car pat) (car temp-val))
+             (,(cdr pat) (cdr temp-val)))
+         ,body))))
+
+
+
+
+
