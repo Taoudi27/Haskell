@@ -1,0 +1,99 @@
+// 3 Versions: code de base; sans les goto; et style fonctionnel
+
+
+
+
+
+// voici le code donnée:
+
+void main(void)
+{
+    /* Elimine les caractères répétés et
+    * stoppe après la première ligne vide. */
+    int c;
+    int last = EOF;
+    
+   
+    while ((c = getchar()) != EOF) {
+       
+        if (c == last) {
+            
+            if (c == '\n') {
+                break;
+              } else {
+               
+                continue;
+            }
+        }
+        putchar(last = c);
+    }
+}
+
+
+
+// version 2 donc sans les go to...
+
+#include <stdio.h>
+
+void main(void)
+{
+    /* Elimine les caractères répétés et
+    * stoppe après la première ligne vide. */
+    int c;
+    int last = EOF;
+    int shouldStop = 0;  // arrêt de la boucle
+
+    // 
+    while ((c = getchar()) != EOF) {
+        
+        // si caractère actuel est identique au dernier
+        if (c != last) {
+         
+            putchar(last = c);
+
+          
+            if (c == '\n') {
+                shouldStop = 1;
+            }
+        }
+
+        // Si une ligne vide est rencontrée après des caractères non répétés, on arrête
+        if (shouldStop == 1) {
+            break;
+        }
+    }
+}
+
+
+
+
+
+// VERSION 3 style fonctionnel
+
+#include <stdio.h>
+
+void processCharacter(int last, int shouldStop) {
+    int c = getchar();
+
+    // Condition d'arrêt
+    if (c == EOF || shouldStop) {
+        return;
+    }
+
+    // Si le caractère est différent du dernier
+    if (c != last) {
+        putchar(c);
+
+       
+        if (c == '\n') {
+            shouldStop = 1;
+        }
+    }
+
+    // Appel récursif pour traiter le prochain caractère
+    processCharacter(c, shouldStop);
+}
+
+void main(void) {
+    processCharacter(EOF, 0); // Appel initial avec dernier caractère à EOF et sans arrêt
+}
