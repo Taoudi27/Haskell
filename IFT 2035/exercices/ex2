@@ -1,0 +1,54 @@
+type Var = String
+-- Expression du code source en forme ASA (énoncé)
+data Exp = Enum Int  -- constante
+         | Evar Var  -- variable
+         | Elet Var Exp Exp  -- Une expr "let x = e1 in e2" 
+         | Ecall Exp Exp    -- appel de fonction
+-- Valeurs renvoyées
+data Val = Vnum Int   -- nbr entier 
+         | Vprim (Val -> Val)   -- une primitive
+
+
+
+-- Instance Show pour Val
+instance Show Val where
+    show :: Val -> String
+    show (Vnum n) = show n
+    show (Vprim _) = "<fonction primitive>"
+
+
+
+mkPrim :: (Int -> Int -> Int) -> Val
+mkPrim f = Vprim (\(Vnum x) -> Vprim (\(Vnum y) -> Vnum (f x y)))
+-- L’environnement initial qui contient toutes les primitives.
+type Env = [(Var, Val)]
+env0 :: Env
+env0 = [("+", mkPrim (+)), ("-", mkPrim (-)),
+        ("*", mkPrim (*)), ("/", mkPrim div)]
+
+
+-- fonction eval
+eval :: Env -> Exp -> Val  
+eval env (Enum n) = Vnum n
+eval env (Evar v) =
+  case lookup v env of
+    Just val -> val
+    Nothing -> error ("Variable " ++ v ++ " non trouvée.")
+eval env (Elet var exp1 exp2) =
+  let val1 = eval env exp1
+      newEnv = (var, val1) : env
+  in eval newEnv exp2
+eval env (Ecall exp1 exp2) =
+  let fun = eval env exp1
+      arg = eval env exp2
+  in case fun of
+       Vprim f -> f arg
+       _ -> error "on attendait une fonnction dans l'appel."
+
+sampleExp :: Exp
+sampleExp = Elet "x" (Enum 3) (Ecall (Ecall (Evar "+") (Evar "x")) (Enum 4))
+
+main :: IO ()
+main = do
+  let result = eval env0 sampleExp   -- exemple énoncé
+  print result
