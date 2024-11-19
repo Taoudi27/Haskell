@@ -1,0 +1,87 @@
+EXERCICE 4
+J'ai rendu un document avec les bonus par mail mais je ne savais pas que c'était uniquement pour nous et qu'il ne fallais pas le rendre.
+
+Modification du code complet en bas.
+
+Q1.
+
+On a 2 fonctions: elookup et eval;
+
+elookup: la fonction prend un x de type var(string) et un environnement qui associe une valeur a une variable, la fonction renvoie donc une valeur associé a la variable.
+
+eval: elle prebd une liste (var, val) et une expression Exp; elle renvoie val qui est l'evaluation de l'expression.
+
+
+Q2.
+
+il implante l'appel par valeur(arguments de fonction sont évalués avant d'être passées a la fonction)
+
+voici la partie du code:
+
+eval env (Ecall fun actual) =
+    case eval env fun of   -- (évalue directement arg actual avant de l'ajouter)
+      Vfun formal body -> eval ((formal, eval env actual) : env) body
+
+
+
+Q3.
+
+il implémente la portée lexicale;
+
+voici la partie du code qui ma permis de savoir: 
+eval env (Elambda arg body) = Vfun arg body
+
+
+
+
+
+CODE:
+
+
+type Var = String
+
+-- Expressions du code source en forme ASA.
+data Exp = Enum Int -- Une constante
+         | Evar Var -- Une variable
+         | Elambda Var Exp -- Une fonction
+         | Ecall Exp Exp -- Un appel de fonction
+
+-- Valeurs renvoyées.
+data Val = Vnum Int -- Un nombre entier
+         | Vfun Var Exp [(Var, Val)]    -- environnement dynamique
+         | VThunk Exp [(Var, Val)]      --  thunk pour l'évaluation
+
+-- Recherche une variable dans l'environnement
+elookup :: Var -> [(Var, Val)] -> Val
+elookup x ((x1, v1) : env) =
+    if x == x1 then v1 else elookup x env
+
+-- Évalue une expression dans un environnement donné
+eval :: [(Var, Val)] -> Exp -> Val
+eval env (Enum n) = Vnum n
+eval env (Evar x) = 
+    case elookup x env of
+        VThunk exp env' -> eval env' exp       -- Si c'est un thunk, j'évalue quand on accède à la variable
+        v -> v                                 -- Sinon, je retourne la valeur
+eval env (Elambda arg body) = Vfun arg body env 
+eval env (Ecall fun actual) =
+    case eval env fun of
+        Vfun formal body funEnv -> eval ((formal, VThunk actual env) : funEnv) body 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
