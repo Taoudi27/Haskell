@@ -1,0 +1,47 @@
+1. Somme
+
+somme :: [Int] -> Int
+somme [] = 0
+somme (x:xs) = x + somme xs
+
+
+2. ajotue1s
+
+ajoute1s :: [Int] -> [Int]
+ajoute1s [] = []
+ajoute1s (x:xs) = (x + 1) : ajoute1s xs
+
+
+
+3. enleve
+
+
+enleve :: Int -> [Int] -> [Int]
+enleve _ [] = []
+enleve n (x:xs)
+    | x <= n    = enleve n xs
+    | otherwise = x : enleve n xs
+
+
+
+
+
+4. retourne
+
+
+retourne :: [Int] -> [Int]
+retourne [] = []
+retourne (x:xs) = retourne xs ++ [x]
+
+
+
+
+// Commentaires:
+// ligne commune pour les 4 exercices: si liste est vide, on retourne une liste vide
+
+// 1. si liste non vide, on aplique somme
+//2. si liste non vide: on ajoute 1 au premier element et ajoute1s recursivement sur liste xs
+
+//3. si liste non vide, on compare tous les x a n puis on applique selon le cas
+
+//4. si liste non vide: retourne recursivement sur liste xs puis ajoute x a la fin de la liste
