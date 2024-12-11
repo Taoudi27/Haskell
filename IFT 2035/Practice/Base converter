@@ -1,0 +1,18 @@
+bin2dec :: Int -> Int
+bin2dec 0 = 0
+bin2dec n = (n `mod` 10) + 2 * bin2dec (n `div` 10)
+
+dec2bin :: Int -> Int
+dec2bin 0 = 0
+dec2bin n = (n `mod` 2) + 10 * dec2bin (n `div` 2)
+
+base2dec :: Int -> Int -> Int
+base2dec _ 0 = 0
+base2dec b n = (n `mod` 10) + b * base2dec b (n `div` 10)
+
+dec2base :: Int -> Int -> Int
+dec2base _ 0 = 0
+dec2base b n = (n `mod` b) + 10 * dec2base b (n `div` b)
+
+baseconv :: Int -> Int -> Int -> Int
+baseconv fromBase toBase n = dec2base toBase (base2dec fromBase n)
